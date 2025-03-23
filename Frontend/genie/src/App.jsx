@@ -1,16 +1,17 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import "./App.css";
+import ReviewForm from "./pages/ReviewForm.jsx";
+import ReviewList from "./pages/ReviewList.jsx";
 
-function App() {
-  const [count, setCount] = useState(0)
-
+const App = () => {
+  const packageId = "456xyz";
+  
   return (
-    <>
-      <h1 className='text-3xl text-red-300'>Hello</h1>
-    </>
-  )
-}
+    <div className="max-w-2xl mx-auto mt-10">
+      <h1 className="text-3xl font-bold text-center mb-5">Tour Guide Reviews</h1>
+      <ReviewForm packageId={packageId} onReviewAdded={() => {}} />
+      <ReviewList packageId={packageId} />
+    </div>
+  );
+};
 
-export default App
+export default App;
