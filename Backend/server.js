@@ -5,6 +5,7 @@ import cors from "cors";
 import UserRoutes from "./Routes/UserRoutes.js"
 import PackageRoutes from "./Routes/PackageRoutes.js"
 import ReviewRoutes from "./Routes/ReviewRoutes.js"
+import CustomPackageRoutes from "./Routes/CustomPackageRoutes.js"
 import connectDB from "../Backend/DB/db.js";
 
 dotenv.config(); 
@@ -26,6 +27,7 @@ app.use(cookieParser());
 app.use("/api/users", UserRoutes);
 app.use("/api/packages", PackageRoutes);
 app.use("/api/reviews", ReviewRoutes);
+app.use('/api/custom', CustomPackageRoutes);
 
 app.get("/", (req, res) => {
   res.send("MongoDB Connection Successful!");

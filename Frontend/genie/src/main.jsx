@@ -12,6 +12,7 @@ import PackageDetails from './pages/PackageDetails.jsx'
 import './index.css'
 import Register from './pages/Register.jsx'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import Chatbot from './components/Chatbot.jsx'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <Router>
@@ -29,6 +30,8 @@ ReactDOM.createRoot(document.getElementById('root')).render(
 
       <Route path="/user/:username" element={<UserDetails />} />
       <Route path="/packages/:id" element={<PackageDetails />} />
+      <Route path="/chatbot" element={<Chatbot/>} />
+
     </Routes>
   </Router>
 );
