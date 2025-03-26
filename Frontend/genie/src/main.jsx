@@ -9,6 +9,7 @@ import Reviews from './pages/Admin/Reviews.jsx'
 import AdminDashboard from './pages/Admin/AdminDashboard.jsx'
 import CreatePackage from './pages/Admin/CreatePackage.jsx'
 import PackageDetails from './pages/PackageDetails.jsx'
+import PaymentPage from './pages/Payments.jsx'
 import './index.css'
 import Register from './pages/Register.jsx'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
@@ -31,6 +32,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       <Route path="/user/:username" element={<UserDetails />} />
       <Route path="/packages/:id" element={<PackageDetails />} />
       <Route path="/chatbot" element={<Chatbot/>} />
+      <Route path="/payment/:id" element={<PaymentPage />} />
 
     </Routes>
   </Router>

@@ -83,11 +83,38 @@ export default function Chatbot() {
 
   const handleUserResponse = async (value) => {
     const currentStep = steps[stepIndex];
-    setMessages(prev => [...prev, { sender: 'user', text: value }]);
-
+    const field = currentStep.field;
     const updatedInputs = { ...inputs };
-    if (currentStep.inputType === 'select') updatedInputs[currentStep.field] = value;
-    else if (currentStep.field) updatedInputs[currentStep.field] = value;
+    const today = new Date();
+    let error = '';
+
+    if (field === 'startDate') {
+      const selectedDate = new Date(value);
+      if (selectedDate < today.setHours(0, 0, 0, 0)) {
+        error = 'Start date cannot be in the past. Please provide a valid date.';
+      }
+    }
+
+    if (field === 'endDate') {
+      const startDate = new Date(inputs.startDate);
+      const endDate = new Date(value);
+      if (!inputs.startDate) {
+        error = 'Please select a start date first.';
+      } else if (endDate <= startDate) {
+        error = 'End date must be after the start date.';
+      }
+    }
+
+    if (error) {
+      setMessages(prev => [...prev, { sender: 'bot', text: error }]);
+      setUserInput('');
+      setVoiceStatus('idle');
+      return;
+    }
+
+    setMessages(prev => [...prev, { sender: 'user', text: value }]);
+    if (currentStep.inputType === 'select') updatedInputs[field] = value;
+    else if (field) updatedInputs[field] = value;
 
     setInputs(updatedInputs);
     setUserInput('');
@@ -130,10 +157,7 @@ export default function Chatbot() {
   };
 
   return (
-    <div
-      className="flex min-h-screen bg-cover bg-center bg-no-repeat relative"
-      style={{ backgroundImage: "url('/profile-bg.jpg')" }}
-    >
+    <div className="flex min-h-screen bg-cover bg-center bg-no-repeat relative" style={{ backgroundImage: "url('/profile-bg.jpg')" }}>
       <div className="absolute inset-0 backdrop-blur-lg bg-black/30 z-0" />
       <Sidebar />
 
@@ -201,6 +225,13 @@ export default function Chatbot() {
               onChange={e => setUserInput(e.target.value)}
               className="flex-1 p-3 border border-gray-200 rounded-full focus:ring-2 focus:ring-pink-500 focus:outline-none"
               placeholder="Type your answer or use mic..."
+              min={
+                steps[stepIndex].field === 'startDate'
+                  ? new Date().toISOString().split('T')[0]
+                  : steps[stepIndex].field === 'endDate' && inputs.startDate
+                  ? inputs.startDate
+                  : undefined
+              }
               required
             />
             <button type="submit" className="bg-pink-600 text-white p-3 rounded-full hover:scale-105 transition">

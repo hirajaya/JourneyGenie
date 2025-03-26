@@ -78,12 +78,22 @@ const PackageDetails = () => {
               </p>
             </div>
 
-            <button
-              onClick={() => navigate(-1)}
-              className="mt-6 px-6 py-2 bg-pink-600 text-white rounded hover:bg-pink-700"
-            >
-              ← Back
-            </button>
+            <div className="flex justify-between mt-6 flex-wrap">
+              <button
+                onClick={() => navigate(-1)}
+                className="px-6 py-2 bg-pink-600 text-white rounded hover:bg-pink-700"
+              >
+                ← Back
+              </button>
+
+              <button
+                onClick={() => navigate(`/payment/${pkg._id}`)}
+                className="px-6 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+              >
+                Proceed to Payment →
+              </button>
+            </div>
+
           </div>
         </div>
 

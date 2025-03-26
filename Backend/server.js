@@ -6,6 +6,7 @@ import UserRoutes from "./Routes/UserRoutes.js"
 import PackageRoutes from "./Routes/PackageRoutes.js"
 import ReviewRoutes from "./Routes/ReviewRoutes.js"
 import CustomPackageRoutes from "./Routes/CustomPackageRoutes.js"
+import PaymentRoutes from "./Routes/PaymentRoutes.js"
 import connectDB from "../Backend/DB/db.js";
 
 dotenv.config(); 
@@ -16,7 +17,7 @@ const PORT = process.env.PORT || 5000;
 connectDB(); 
 
 app.use(cors({
-  origin: "http://localhost:5173", 
+  origin: "http://localhost:5175", 
   credentials: true               
 }));
 
@@ -28,6 +29,7 @@ app.use("/api/users", UserRoutes);
 app.use("/api/packages", PackageRoutes);
 app.use("/api/reviews", ReviewRoutes);
 app.use('/api/custom', CustomPackageRoutes);
+app.use('/api/payments', PaymentRoutes);
 
 app.get("/", (req, res) => {
   res.send("MongoDB Connection Successful!");
