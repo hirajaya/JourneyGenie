@@ -10,6 +10,8 @@ const PackageReviews = ({ packageId, userId }) => {
   const [rating, setRating] = useState(0);
   const [hover, setHover] = useState(0);
   const [editingReviewId, setEditingReviewId] = useState(null);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [reviewToDelete, setReviewToDelete] = useState(null);
 
   useEffect(() => {
     fetchReviews();
@@ -68,15 +70,21 @@ const PackageReviews = ({ packageId, userId }) => {
     toast.info('Edit mode enabled');
   };
 
-  const handleDelete = async (id) => {
-    if (window.confirm('Are you sure you want to delete this review?')) {
-      try {
-        await axios.delete(`http://localhost:5000/api/reviews/${id}`);
-        toast.success('Review deleted');
-        fetchReviews();
-      } catch (err) {
-        toast.error('Failed to delete review');
-      }
+  const confirmDelete = (id) => {
+    setReviewToDelete(id);
+    setShowDeleteConfirm(true);
+  };
+
+  const handleDeleteConfirmed = async () => {
+    try {
+      await axios.delete(`http://localhost:5000/api/reviews/${reviewToDelete}`);
+      toast.success('Review deleted');
+      fetchReviews();
+    } catch (err) {
+      toast.error('Failed to delete review');
+    } finally {
+      setShowDeleteConfirm(false);
+      setReviewToDelete(null);
     }
   };
 
@@ -149,19 +157,42 @@ const PackageReviews = ({ packageId, userId }) => {
                       onClick={() => handleEdit(r)}
                       className="flex items-center gap-1 text-green-600 hover:text-green-800"
                     >
-                      <FaEdit /> 
+                      <FaEdit />
                     </button>
                     <button
-                      onClick={() => handleDelete(r._id)}
+                      onClick={() => confirmDelete(r._id)}
                       className="flex items-center gap-1 text-red-600 hover:text-red-800"
                     >
-                      <FaTrash /> 
+                      <FaTrash />
                     </button>
                   </>
                 )}
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {showDeleteConfirm && (
+        <div className="fixed inset-0 bg-opacity-60 flex justify-center items-center z-50">
+          <div className="bg-white rounded-xl p-6 max-w-sm w-full shadow-lg text-center">
+            <h3 className="text-xl font-semibold text-pink-600 mb-4">Confirm Delete</h3>
+            <p className="text-gray-700 mb-6">Are you sure you want to delete this review?</p>
+            <div className="flex justify-center gap-4">
+              <button
+                onClick={handleDeleteConfirmed}
+                className="bg-pink-600 hover:bg-pink-700 text-white px-4 py-2 rounded-lg transition"
+              >
+                Yes, Delete
+              </button>
+              <button
+                onClick={() => setShowDeleteConfirm(false)}
+                className="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-lg transition"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

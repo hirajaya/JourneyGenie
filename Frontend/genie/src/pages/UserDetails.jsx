@@ -12,6 +12,7 @@ const UserDetails = () => {
   const [user, setUser] = useState(null);
   const [editMode, setEditMode] = useState(false);
   const [formData, setFormData] = useState({});
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -47,7 +48,11 @@ const UserDetails = () => {
     }
   };
 
-  const handleDelete = async () => {
+  const confirmDelete = () => {
+    setShowDeleteConfirm(true);
+  };
+
+  const handleDeleteConfirmed = async () => {
     try {
       await axios.delete(`http://localhost:5000/api/users/${username}`);
       localStorage.removeItem('loggedInUser');
@@ -77,7 +82,6 @@ const UserDetails = () => {
       <div className="absolute inset-0 backdrop-blur-lg bg-black/30 z-0" />
       <Sidebar />
 
-      {/* Toast container */}
       <ToastContainer position="top-right" autoClose={3000} />
 
       <div className="ml-64 p-8 w-full relative z-10 text-white min-h-screen">
@@ -168,7 +172,7 @@ const UserDetails = () => {
                 {editMode ? 'Cancel Edit' : 'Update Details'}
               </button>
               <button
-                onClick={handleDelete}
+                onClick={confirmDelete}
                 className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded transition"
               >
                 Delete Account
@@ -185,6 +189,29 @@ const UserDetails = () => {
           <p className="text-white text-xl text-center mt-12">Loading user info...</p>
         )}
       </div>
+
+      {showDeleteConfirm && (
+        <div className="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50">
+          <div className="bg-white rounded-xl p-6 max-w-sm w-full shadow-lg text-center">
+            <h3 className="text-xl font-semibold text-pink-600 mb-4">Confirm Account Deletion</h3>
+            <p className="text-gray-700 mb-6">Are you sure you want to delete your account?</p>
+            <div className="flex justify-center gap-4">
+              <button
+                onClick={handleDeleteConfirmed}
+                className="bg-pink-600 hover:bg-pink-700 text-white px-4 py-2 rounded-lg transition"
+              >
+                Yes, Delete
+              </button>
+              <button
+                onClick={() => setShowDeleteConfirm(false)}
+                className="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-lg transition"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

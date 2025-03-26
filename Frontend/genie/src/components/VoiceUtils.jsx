@@ -14,12 +14,12 @@ const provinceDestinations = {
   const allProvinces = Object.keys(provinceDestinations);
   
   const steps = [
-    { type: 'bot', text: "Hello, there! I am Journey Genie. Would you like me to create a tour package for you?", inputType: null, icon: Coffee },
-    { type: 'bot', text: "Which province would you like to explore?", inputType: 'select', field: 'province', icon: MapPin },
-    { type: 'bot', text: "Awesome! What destination do you have in mind?", inputType: 'select', field: 'destination', icon: MapPin },
-    { type: 'bot', text: "When do you want to start your journey?", inputType: 'date', field: 'startDate', icon: Calendar },
-    { type: 'bot', text: "When does your trip end?", inputType: 'date', field: 'endDate', icon: Calendar },
-    { type: 'bot', text: "How many people are traveling?", inputType: 'number', field: 'numberOfPersons', icon: Users },
+    { type: 'bot', text: "Hey there! I'm Journey Genie 🧞‍♂️ Ready to help you craft your perfect tour package. Shall we get started?", inputType: null, icon: Coffee },
+    { type: 'bot', text: "Great! Which province in Sri Lanka are you excited to explore? 🌄", inputType: 'select', field: 'province', icon: MapPin },
+    { type: 'bot', text: "Nice choice! Now, do you have a specific destination in mind within that province? 🗺️", inputType: 'select', field: 'destination', icon: MapPin },
+    { type: 'bot', text: "Sweet! When would you like your adventure to begin? 📅", inputType: 'date', field: 'startDate', icon: Calendar },
+    { type: 'bot', text: "And when should we wrap up this magical journey? ✨", inputType: 'date', field: 'endDate', icon: Calendar },
+    { type: 'bot', text: "Lastly, how many awesome travelers (including you) are joining this trip? 👨‍👩‍👧‍👦", inputType: 'number', field: 'numberOfPersons', icon: Users },
     
   ];
   
@@ -70,7 +70,6 @@ function normalizeVoiceInput(text, inputType) {
   return normalized;
 }
 
-// ✅ New function to convert YYYY-MM-DD to DD/MM/YYYY
 function formatDateForBackend(dateStr) {
   if (!dateStr) return '';
   const [year, month, day] = dateStr.split('-');
