@@ -1,8 +1,9 @@
-
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import AdminNavbar from '../../components/AdminNavbar.jsx';
 import { FaStar, FaThumbsUp } from 'react-icons/fa';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 
 const Reviews = () => {
   const [reviewsByPackage, setReviewsByPackage] = useState({});
@@ -32,6 +33,32 @@ const Reviews = () => {
     }, {});
   };
 
+  const generatePDF = () => {
+    const doc = new jsPDF();
+    doc.setFontSize(18);
+    doc.text('Top Rated Tour Packages Report', 14, 22);
+    doc.setFontSize(12);
+    doc.setTextColor(100);
+
+    const tableColumn = ["Package Name", "Average Rating", "Number of Reviews"];
+    const tableRows = [];
+
+    Object.entries(reviewsByPackage).forEach(([packageName, reviews]) => {
+      const avgRating = (
+        reviews.reduce((acc, r) => acc + r.rating, 0) / reviews.length
+      ).toFixed(2);
+      tableRows.push([packageName, avgRating, reviews.length]);
+    });
+
+    doc.autoTable({
+      head: [tableColumn],
+      body: tableRows,
+      startY: 30,
+    });
+
+    doc.save('TopRatedTourPackages.pdf');
+  };
+
   return (
     <div
       className="min-h-screen bg-cover bg-center bg-no-repeat flex"
@@ -50,49 +77,59 @@ const Reviews = () => {
           {Object.keys(reviewsByPackage).length === 0 ? (
             <p className="text-center text-gray-500">No reviews available.</p>
           ) : (
-            Object.entries(reviewsByPackage).map(([packageName, reviews]) => (
-              <div key={packageName} className="mb-12">
-                <h2 className="text-xl font-bold text-pink-700 mb-4 border-b pb-2">
-                  {packageName}
-                </h2>
+            <>
+              {Object.entries(reviewsByPackage).map(([packageName, reviews]) => (
+                <div key={packageName} className="mb-12">
+                  <h2 className="text-xl font-bold text-pink-700 mb-4 border-b pb-2">
+                    {packageName}
+                  </h2>
 
-                <div className="overflow-x-auto">
-                  <table className="min-w-full text-sm border-collapse text-center mb-6">
-                    <thead>
-                      <tr className="bg-pink-700 text-white rounded-lg">
-                        <th className="px-4 py-3 rounded-tl-lg">User</th>
-                        <th className="px-4 py-3">Rating</th>
-                        <th className="px-4 py-3">Comment</th>
-                        <th className="px-4 py-3 rounded-tr-lg">Likes</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {reviews.map((r, idx) => (
-                        <tr
-                          key={r._id}
-                          className={`${
-                            idx % 2 === 0 ? 'bg-gray-100' : 'bg-white'
-                          } hover:bg-pink-50 transition`}
-                        >
-                          <td className="px-4 py-2 font-medium text-pink-700">
-                            {r.user?.name || 'Unknown'}
-                          </td>
-                          <td className="px-4 py-2 flex justify-center items-center gap-1 text-yellow-500">
-                            {[...Array(5)].map((_, i) => (
-                              <FaStar key={i} className={i < r.rating ? 'fill-current' : 'text-gray-300'} />
-                            ))}
-                          </td>
-                          <td className="px-4 py-2 text-gray-700">{r.comment}</td>
-                          <td className="px-4 py-2 text-blue-600 font-semibold flex items-center justify-center gap-1">
-                            <FaThumbsUp /> {r.likes}
-                          </td>
+                  <div className="overflow-x-auto">
+                    <table className="min-w-full text-sm border-collapse text-center mb-6">
+                      <thead>
+                        <tr className="bg-pink-700 text-white rounded-lg">
+                          <th className="px-4 py-3 rounded-tl-lg">User</th>
+                          <th className="px-4 py-3">Rating</th>
+                          <th className="px-4 py-3">Comment</th>
+                          <th className="px-4 py-3 rounded-tr-lg">Likes</th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                      </thead>
+                      <tbody>
+                        {reviews.map((r, idx) => (
+                          <tr
+                            key={r._id}
+                            className={`${
+                              idx % 2 === 0 ? 'bg-gray-100' : 'bg-white'
+                            } hover:bg-pink-50 transition`}
+                          >
+                            <td className="px-4 py-2 font-medium text-pink-700">
+                              {r.user?.name || 'Unknown'}
+                            </td>
+                            <td className="px-4 py-2 flex justify-center items-center gap-1 text-yellow-500">
+                              {[...Array(5)].map((_, i) => (
+                                <FaStar key={i} className={i < r.rating ? 'fill-current' : 'text-gray-300'} />
+                              ))}
+                            </td>
+                            <td className="px-4 py-2 text-gray-700">{r.comment}</td>
+                            <td className="px-4 py-2 text-blue-600 font-semibold flex items-center justify-center gap-1">
+                              <FaThumbsUp /> {r.likes}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
+              ))}
+              <div className="text-center mt-8">
+                <button
+                  onClick={generatePDF}
+                  className="bg-pink-700 text-white px-6 py-2 rounded-lg hover:bg-pink-800 transition"
+                >
+                  Download Top Rated Packages Report
+                </button>
               </div>
-            ))
+            </>
           )}
         </div>
       </div>
