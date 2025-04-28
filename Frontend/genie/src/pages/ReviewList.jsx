@@ -1,21 +1,24 @@
 import { useEffect, useState } from "react";
-import { fetchReviews } from "../pages/ReviewService.js";
-import ReviewItem from "./ReviewItem.jsx";
+import { fetchReviews, likeReview } from "../pages/ReviewService.js";
 
 const ReviewList = ({ packageId }) => {
   const [reviews, setReviews] = useState([]);
-  const [averageRating, setAverageRating] = useState(0);
 
   const loadReviews = async () => {
-    const data = await fetchReviews(packageId);
-    setReviews(data);
+    try {
+      const data = await fetchReviews(packageId);
+      setReviews(data);
+    } catch (error) {
+      console.error("Error fetching reviews:", error);
+    }
+  };
 
-    // Calculate average rating
-    if (data.length > 0) {
-      const total = data.reduce((acc, review) => acc + review.rating, 0);
-      setAverageRating((total / data.length).toFixed(1));
-    } else {
-      setAverageRating(0);
+  const handleLike = async (reviewId) => {
+    try {
+      await likeReview(reviewId);
+      loadReviews();
+    } catch (error) {
+      console.error("Error liking review:", error);
     }
   };
 
@@ -24,21 +27,29 @@ const ReviewList = ({ packageId }) => {
   }, [packageId]);
 
   return (
-    <div className="p-6 bg-white shadow-md rounded-lg">
-      <h2 className="text-2xl font-semibold mb-3">Trip Reviews</h2>
-
-      {/* Average Rating */}
-      <div className="flex items-center mb-4">
-        <span className="text-yellow-500 text-lg font-bold">{averageRating} stars</span>
-        <span className="ml-2 text-gray-600"> - based on {reviews.length} reviews</span>
-      </div>
-
-      {/* Reviews List */}
+    <div className="p-4 bg-gray-100 rounded-lg">
+      <h2 className="text-xl font-semibold mb-3">Reviews</h2>
       {reviews.length === 0 ? (
-        <p className="text-gray-600">No reviews yet.</p>
+        <p>No reviews yet.</p>
       ) : (
         reviews.map((review) => (
-          <ReviewItem key={review._id} review={review} onReviewUpdated={loadReviews} />
+          <div
+            key={review._id}
+            className="p-3 mb-3 border rounded-lg bg-white shadow-sm"
+          >
+            <div className="flex justify-between items-center">
+              <p className="font-semibold">{review.comment}</p>
+              <button
+                onClick={() => handleLike(review._id)}
+                className="text-blue-500 text-sm hover:underline"
+              >
+                👍 {review.likes}
+              </button>
+            </div>
+            <div className="text-sm text-gray-500">
+              Rating: {review.rating} | {new Date(review.createdAt).toLocaleDateString()}
+            </div>
+          </div>
         ))
       )}
     </div>

@@ -1,18 +1,21 @@
-import express from "express";
-import { 
-  createReview, 
-  getReviewsByPackage, 
-  updateReview, 
-  deleteReview, 
-  likeReview 
-} from "../Controllers/ReviewController.js";
+import express from 'express';
+import {
+  createPackage,
+  getAllPackages,
+  getPackageById,
+  updatePackage,
+  deletePackage,
+} from '../Controllers/PackageController.js';
 
 const router = express.Router();
 
-router.post("/create", createReview);
-router.get("/:packageId", getReviewsByPackage);
-router.put("/:id", updateReview);
-router.delete("/:id", deleteReview);
-router.patch("/:id/like", likeReview);
+router.route('/')
+  .post(createPackage)
+  .get(getAllPackages);
+
+router.route('/:id')
+  .get(getPackageById)
+  .put(updatePackage)
+  .delete(deletePackage);
 
 export default router;

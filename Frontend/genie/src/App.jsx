@@ -1,17 +1,13 @@
 import "./App.css";
-import ReviewForm from "./pages/ReviewForm.jsx";
-import ReviewList from "./pages/ReviewList.jsx";
+import ReviewsPage from "./pages/ReviewPage.jsx";
 
-const App = () => {
-  const packageId = "456xyz";
-  
+function App() {
   return (
-    <div className="max-w-2xl mx-auto mt-10">
-      <h1 className="text-3xl font-bold text-center mb-5">Tour Guide Reviews</h1>
-      <ReviewForm packageId={packageId} onReviewAdded={() => {}} />
-      <ReviewList packageId={packageId} />
+    <div className="App">
+      <ReviewsPage packageId="6437d3b2f87a8c7d891e5" />
     </div>
   );
-};
+}
 
 export default App;
+

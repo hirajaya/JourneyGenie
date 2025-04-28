@@ -6,6 +6,7 @@ export const createPackage = async (req, res) => {
     console.log("Request Body:", req.body);
     
     const { name, price } = req.body;
+    
 
     // Basic validation
     if (!name || !price) {

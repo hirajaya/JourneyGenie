@@ -1,46 +1,35 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
 const reviewSchema = new mongoose.Schema(
   {
-    tourist: { 
-      type: mongoose.Schema.Types.ObjectId, 
-      ref: "Tourist", 
-      required: true 
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: 'User',
     },
-    packageId: { 
-      type: mongoose.Schema.Types.ObjectId, 
-      ref: "Package", 
-      required: true 
+    package: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: 'Package',
     },
-    rating: { 
-      type: Number, 
-      required: true, 
-      min: [1, "Rating must be at least 1"], 
-      max: [5, "Rating cannot be more than 5"] 
+    rating: {
+      type: Number,
+      required: true,
+      min: 1,
+      max: 5,
     },
-    comment: { 
-      type: String, 
-      required: [true, "Comment is required"], 
-      trim: true, 
-      minlength: [5, "Comment must be at least 5 characters"], 
-      maxlength: [500, "Comment cannot exceed 500 characters"] 
+    comment: {
+      type: String,
+      required: true,
+      maxlength: 1000,
     },
-    likes: { 
-      type: Number, 
-      default: 0, 
-      min: 0 
+    likes: {
+      type: Number,
+      default: 0,
     },
-    createdAt: { 
-      type: Date, 
-      default: Date.now 
-    },
-    updatedAt: { 
-      type: Date 
-    }
   },
-  { timestamps: true } // This automatically adds `createdAt` and `updatedAt`
+  { timestamps: true }
 );
 
-const Review = mongoose.model("Review", reviewSchema);
+const Review = mongoose.model('Review', reviewSchema);
 export default Review;
-

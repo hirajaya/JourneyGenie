@@ -1,59 +1,59 @@
 import { useState } from "react";
-import { submitReview } from "../pages/ReviewService.js";
+import { addReview } from "../pages/ReviewService.js";
 
 const ReviewForm = ({ packageId, onReviewAdded }) => {
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
-  const [error, setError] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (rating === 0 || comment.length < 5) {
-      setError("Please provide a rating and a comment with at least 5 characters.");
-      return;
+    const reviewData = { packageId, rating, comment };
+    try {
+      await addReview(reviewData);
+      onReviewAdded(); // Refresh the review list
+      setRating(0);
+      setComment("");
+    } catch (error) {
+      console.error("Error adding review:", error);
     }
-
-    await submitReview({ packageId, rating, comment });
-    setRating(0);
-    setComment("");
-    setError("");
-    onReviewAdded(); // Reload reviews
   };
 
   return (
-    <div className="p-4 bg-gray-100 rounded-lg">
-      <h2 className="text-lg font-semibold mb-2">Leave a Review</h2>
-
-      {error && <p className="text-red-500">{error}</p>}
-
-      {/* Star Rating Selection */}
-      <div className="flex mb-2">
-        {[...Array(5)].map((_, i) => (
-          <span
-            key={i}
-            className={`text-2xl cursor-pointer ${i < rating ? "text-yellow-500" : "text-gray-300"}`}
-            onClick={() => setRating(i + 1)}
-          >
-            ★
-          </span>
-        ))}
+    <form onSubmit={handleSubmit} className="p-4 bg-gray-100 rounded-lg shadow-md">
+      <h2 className="text-lg font-semibold mb-4">Write a Review</h2>
+      <div className="mb-4">
+        <label className="block text-sm font-medium mb-2">Rating:</label>
+        <input
+          type="number"
+          value={rating}
+          onChange={(e) => setRating(e.target.value)}
+          className="p-2 border rounded w-full"
+          min="1"
+          max="5"
+          required
+        />
       </div>
-
-      {/* Comment Input */}
-      <textarea
-        className="w-full p-2 border rounded"
-        placeholder="Write your review..."
-        value={comment}
-        onChange={(e) => setComment(e.target.value)}
-      ></textarea>
-
-      {/* Submit Button */}
-      <button onClick={handleSubmit} className="mt-2 bg-blue-500 text-white px-4 py-2 rounded">
-        Submit
+      <div className="mb-4">
+        <label className="block text-sm font-medium mb-2">Comment:</label>
+        <textarea
+          value={comment}
+          onChange={(e) => setComment(e.target.value)}
+          className="p-2 border rounded w-full"
+          rows="4"
+          minLength="5"
+          maxLength="500"
+          required
+        ></textarea>
+      </div>
+      <button
+        type="submit"
+        className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+      >
+        Submit Review
       </button>
-    </div>
+    </form>
   );
 };
 
 export default ReviewForm;
+
