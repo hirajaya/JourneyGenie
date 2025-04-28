@@ -27,6 +27,8 @@ app.use("/api/tourists", touristRoutes);
 
 app.use("/api/packages", packageRoutes);
 
+app.use('/api/payments', PaymentRoutes);
+
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
 });
