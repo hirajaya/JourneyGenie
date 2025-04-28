@@ -3,8 +3,8 @@ import express from "express";
 import connectDB from "../Backend/DB/db.js";
 import cors from "cors";
 import reviewRoutes from "./Routes/ReviewRoutes.js";
-import touristRoutes from "./Routes/TouristRoutes.js";
 import packageRoutes from "./Routes/PackageRoutes.js";
+import paymentRoutes from "./Routes/PaymentRoutes.js";
 
 dotenv.config(); 
 
@@ -23,11 +23,9 @@ app.get("/", (req, res) => {
 
 app.use("/api/reviews", reviewRoutes);
 
-app.use("/api/tourists", touristRoutes);
-
 app.use("/api/packages", packageRoutes);
 
-app.use('/api/payments', PaymentRoutes);
+app.use('/api/payments', paymentRoutes);
 
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);

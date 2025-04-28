@@ -1,21 +1,20 @@
 import express from 'express';
 import {
-  createPackage,
-  getAllPackages,
-  getPackageById,
-  updatePackage,
-  deletePackage,
-} from '../Controllers/PackageController.js';
+  createReview,
+  getAllReviews,
+  getReviewsByPackage,
+  likeReview,
+  updateReview,
+  deleteReview,
+} from '../Controllers/ReviewController.js';
 
 const router = express.Router();
 
-router.route('/')
-  .post(createPackage)
-  .get(getAllPackages);
-
-router.route('/:id')
-  .get(getPackageById)
-  .put(updatePackage)
-  .delete(deletePackage);
+router.post('/', createReview);
+router.get('/', getAllReviews);
+router.get('/package/:packageId', getReviewsByPackage);
+router.put('/like/:id', likeReview);
+router.put('/:id', updateReview);
+router.delete('/:id', deleteReview);
 
 export default router;

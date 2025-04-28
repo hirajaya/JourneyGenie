@@ -1,5 +1,5 @@
 import Payment from "../Models/Payment.js";
-import asyncHandler from '../middleware/asyncHandler.js';
+import asyncHandler from '../Middleware/asyncHandler.js';
 
 const makePayment = asyncHandler(async (req, res) => {
   const { user, packageId, amount, paymentMethod, cardNumber, cardHolder } = req.body;

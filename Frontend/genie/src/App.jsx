@@ -1,11 +1,16 @@
 import "./App.css";
 import ReviewsPage from "./pages/ReviewPage.jsx";
+import PaymentPage from './pages/PaymentPage.jsx';
 
 function App() {
   return (
-    <div className="App">
-      <ReviewsPage packageId="6437d3b2f87a8c7d891e5" />
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/payment/:id" element={<PaymentPage />} />
+        {/*<Route path="/home" element={<HomePage />} />*/}
+        {/* Add other routes here */}
+      </Routes>
+    </Router>
   );
 }
 
