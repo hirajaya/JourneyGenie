@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Sidebar from '../components/SideBar.jsx';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const PaymentPage = () => {
   const { id } = useParams(); 
@@ -39,10 +41,15 @@ const PaymentPage = () => {
         packageId: id,
         amount: pkg.totalPrice,
       });
-      alert('Payment Successful!');
-      navigate('/home');
+      toast.success('🎉 Payment Successful!', {
+        position: 'top-center',
+        autoClose: 3000,
+        onClose: () => navigate('/home'),
+      });
     } catch (err) {
-      alert('Payment Failed');
+      toast.error('❌ Payment Failed. Please try again.', {
+        position: 'top-center',
+      });
     }
   };
 
@@ -50,12 +57,12 @@ const PaymentPage = () => {
 
   return (
     <div className="flex min-h-screen bg-cover bg-center relative" style={{ backgroundImage: "url('/profile-bg.jpg')" }}>
-      
       <div className="z-50 relative">
         <Sidebar />
       </div>
 
       <div className="absolute inset-0 bg-opacity-40 backdrop-blur-md z-0" />
+      <ToastContainer />
 
       <div className="ml-64 w-full p-10 relative z-10 flex items-center justify-center">
         <div className="w-full max-w-2xl bg-white bg-opacity-90 backdrop-blur-lg p-10 rounded-2xl shadow-2xl">

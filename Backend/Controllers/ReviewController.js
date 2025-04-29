@@ -1,5 +1,5 @@
 import Review from '../Models/Review.js';
-import asyncHandler from '../Middleware/asyncHandler.js';
+import asyncHandler from '../middleware/asyncHandler.js';
 
 const createReview = asyncHandler(async (req, res) => {
   const { user, package: packageId, rating, comment } = req.body;
@@ -79,6 +79,10 @@ const updateReview = asyncHandler(async (req, res) => {
     res.status(200).json(populatedReview);
   });
   
+  const getTopLikedReviews = asyncHandler(async (req, res) => {
+    const reviews = await Review.find().sort({ likes: -1 }).limit(10);
+    res.json(reviews);
+  });
 
 const deleteReview = asyncHandler(async (req, res) => {
   const { id } = req.params;
@@ -99,6 +103,7 @@ export {
   getAllReviews,
   getReviewsByPackage,
   likeReview,
+  getTopLikedReviews,
   updateReview,
   deleteReview,
 };

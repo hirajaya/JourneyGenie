@@ -26,4 +26,32 @@ const getAllPayments = asyncHandler(async (req, res) => {
   res.status(200).json(payments);
 });
 
-export {makePayment,getAllPayments}
+const deletePayment = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+
+  const payment = await Payment.findById(id);
+
+  if (!payment) {
+    return res.status(404).json({ message: 'Payment not found' });
+  }
+
+  await payment.deleteOne();
+
+  res.status(200).json({ message: 'Payment deleted successfully' });
+});
+
+const getPaymentsByUser = asyncHandler(async (req, res) => {
+  const { userId } = req.params;
+
+  const payments = await Payment.find({ user: userId }).populate('user', 'name email');
+
+  if (!payments.length) {
+    return res.status(404).json({ message: 'No payments found for this user' });
+  }
+
+  res.status(200).json(payments);
+});
+
+
+
+export {makePayment,getAllPayments, deletePayment, getPaymentsByUser}
