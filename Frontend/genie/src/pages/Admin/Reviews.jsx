@@ -7,6 +7,8 @@ import 'jspdf-autotable';
 
 const Reviews = () => {
   const [reviewsByPackage, setReviewsByPackage] = useState({});
+  const [searchTerm, setSearchTerm] = useState('');
+  const [showTopRatedOnly, setShowTopRatedOnly] = useState(false);
 
   useEffect(() => {
     const fetchReviews = async () => {
@@ -43,7 +45,7 @@ const Reviews = () => {
     const tableColumn = ["Package Name", "Average Rating", "Number of Reviews"];
     const tableRows = [];
 
-    Object.entries(reviewsByPackage).forEach(([packageName, reviews]) => {
+    Object.entries(filteredPackages).forEach(([packageName, reviews]) => {
       const avgRating = (
         reviews.reduce((acc, r) => acc + r.rating, 0) / reviews.length
       ).toFixed(2);
@@ -59,6 +61,16 @@ const Reviews = () => {
     doc.save('TopRatedTourPackages.pdf');
   };
 
+  // Filtered data based on search and top-rated toggle
+  const filteredPackages = Object.entries(reviewsByPackage).filter(([packageName, reviews]) => {
+    const matchesSearch = packageName.toLowerCase().includes(searchTerm.toLowerCase());
+    if (showTopRatedOnly) {
+      const avgRating = reviews.reduce((acc, r) => acc + r.rating, 0) / reviews.length;
+      return matchesSearch && avgRating >= 4; // top-rated = rating >= 4
+    }
+    return matchesSearch;
+  });
+
   return (
     <div
       className="min-h-screen bg-cover bg-center bg-no-repeat flex"
@@ -70,15 +82,35 @@ const Reviews = () => {
         <div className="absolute inset-0 backdrop-blur-lg bg-black/30 z-0" />
 
         <div className="relative bg-white bg-opacity-80 backdrop-blur-md p-8 rounded-2xl shadow-2xl max-w-6xl mx-auto z-10">
-          <h1 className="text-3xl font-extrabold text-center text-black mb-8">
+          <h1 className="text-3xl font-extrabold text-center text-black mb-6">
             Package Reviews
           </h1>
 
-          {Object.keys(reviewsByPackage).length === 0 ? (
-            <p className="text-center text-gray-500">No reviews available.</p>
+          {/* Search Bar & Toggle */}
+          <div className="flex justify-between items-center mb-6">
+            <input
+              type="text"
+              placeholder="Search by package name..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="px-4 py-2 border rounded-lg w-full max-w-md shadow"
+            />
+            <label className="flex items-center ml-4 text-sm">
+              <input
+                type="checkbox"
+                checked={showTopRatedOnly}
+                onChange={() => setShowTopRatedOnly(!showTopRatedOnly)}
+                className="mr-2"
+              />
+              Show Top Rated Only
+            </label>
+          </div>
+
+          {filteredPackages.length === 0 ? (
+            <p className="text-center text-gray-500">No matching reviews found.</p>
           ) : (
             <>
-              {Object.entries(reviewsByPackage).map(([packageName, reviews]) => (
+              {filteredPackages.map(([packageName, reviews]) => (
                 <div key={packageName} className="mb-12">
                   <h2 className="text-xl font-bold text-pink-700 mb-4 border-b pb-2">
                     {packageName}
@@ -107,7 +139,10 @@ const Reviews = () => {
                             </td>
                             <td className="px-4 py-2 flex justify-center items-center gap-1 text-yellow-500">
                               {[...Array(5)].map((_, i) => (
-                                <FaStar key={i} className={i < r.rating ? 'fill-current' : 'text-gray-300'} />
+                                <FaStar
+                                  key={i}
+                                  className={i < r.rating ? 'fill-current' : 'text-gray-300'}
+                                />
                               ))}
                             </td>
                             <td className="px-4 py-2 text-gray-700">{r.comment}</td>
